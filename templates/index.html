@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Run Tkinter Script</title>
+    <style>
+        body {
+            height:500px;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+            background:linear-gradient(#E2EAF4,#E2EAF4,white);
+            background-repeat:no-repeat;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            flex-direction:column;
+        }
+        h1 {
+            color: purple;
+            text-align: center;
+        }
+        p {
+            font-size: 18px;
+            color: darkslategray;
+        }
+        .styled-button {
+            background-color: #4CAF50; /* Green background */
+            color: white; /* White text */
+            padding: 15px 32px; /* Top/bottom and left/right padding */
+            text-align: center; /* Center text */
+            text-decoration: none; /* Remove underline */
+            display: inline-block; /* Make the button inline */
+            font-size: 16px; /* Text size */
+            margin: 4px 2px; /* Margin for spacing */
+            border: none; /* Remove border */
+            border-radius: 12px; /* Rounded corners */
+            cursor: pointer; /* Pointer cursor on hover */
+            transition: background-color 0.3s; /* Smooth transition */
+        }
+
+        /* Button hover effect */
+        .styled-button:hover {
+            background-color: #45a049; /* Darker green on hover */
+        }
+    </style>
+</head>
+<body>
+    <h1>Hello user do you want to compress/decompress file then click on the given button</h1>
+    <form id="run-form" action="/run-script" method="POST">
+        <button type="submit" class="styled-button">CLICK ME !</button>
+    </form>
+</body>
+</html>
