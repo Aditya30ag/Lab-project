@@ -68,6 +68,12 @@ def zipfiledecompressor(input_file,output_file):
         zipf.extractall(output_file)
         result_label.config(text=f"File '{input_file}' decompressed to '{output_file}.zip'")
 
+    #code for real time analysis
+    output_file=output_file
+    a=os.path.abspath(output_file)
+    size=os.path.getsize(a)/1024
+    result_label_size.config(text=f"After decompress file size: {size:.4f} KB")
+
 def gzipfiledecompressor(input_file,output_file):
     with open(input_file, 'rb') as f_in:
         with gzip.open(output_file, 'wb') as f_out:
@@ -75,11 +81,23 @@ def gzipfiledecompressor(input_file,output_file):
     
     result_label.config(text=f"File '{input_file}' decompressed to '{output_file}'")
 
+    #code for real time analysis
+    output_file=output_file
+    a=os.path.abspath(output_file)
+    size=os.path.getsize(a)/1024
+    result_label_size.config(text=f"After decompress file size: {size:.4f} KB")
+
 def py7zrfiledecompressor(input_file,output_file):
     with py7zr.SevenZipFile(input_file, 'r') as archive:
         archive.extractall(path=output_file)
 
     result_label.config(text=f"File '{input_file}' decompressed to '{output_file}'")
+
+    #code for real time analysis
+    output_file=output_file
+    a=os.path.abspath(output_file)
+    size=os.path.getsize(a)/1024
+    result_label_size.config(text=f"After decompress file size: {size:.4f} KB")
 
 def printsize(input_file):
     a=os.path.getsize(input_file)/1024
@@ -133,6 +151,9 @@ def decompress_file():
         if not os.path.exists(input_file):
             raise ValueError(f"Input File {input_file} not found")
         
+        result_label_size_before.config(text=f"Before decompress file size:{printsize(input_file):.4f} KB")
+        start_time = time.time()
+
         if format_choice=="GZIP":
             gzipfiledecompressor(input_file,output_file)
         elif format_choice=="ZIP":
@@ -141,6 +162,10 @@ def decompress_file():
             py7zrfiledecompressor(input_file,output_file)
         else:
             result_label.config(text="Invalid format selection.")
+        
+        elapsed_time = time.time() - start_time
+        result_label_time.config(text=f"The time taken to decompress the  file :{elapsed_time:.4f} sec")
+
     except Exception as e:
         result_label.config(text=f"An error occurred: {e}")
 
