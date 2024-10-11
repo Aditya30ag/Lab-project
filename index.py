@@ -8,6 +8,7 @@ import zipfile
 import gzip
 import shutil
 import py7zr
+import time
 
 def browse_input_file():
     file_path = filedialog.askopenfilename()
@@ -23,22 +24,42 @@ def browse_output_file():
 #compressor
 def zipfilecompresser(input_file,output_file):
     with zipfile.ZipFile(output_file + ".zip", 'w') as zipf:
-            # Add the file to the zip
-            zipf.write(input_file, os.path.basename(input_file))
-            print(f"{input_file} has been zipped into {output_file}.zip")
-            result_label.config(text=f"File '{input_file}' compressed to '{output_file}.zip'")
+        # Add the file to the zip
+        zipf.write(input_file, os.path.basename(input_file))
+        print(f"{input_file} has been zipped into {output_file}.zip")
+        result_label.config(text=f"File '{input_file}' compressed to '{output_file}.zip'")
+
+        #code for real time analysis
+        output_file=output_file+".zip"
+        a=os.path.abspath(output_file)
+        size=os.path.getsize(a)/1024
+        result_label_size.config(text=f"After compression file size: {size:.4f} KB")
+            
 
 def gzipfilecompressor(input_file,output_file):
     with open(input_file, 'rb') as f_in:
         with gzip.open(input_file+ ".gz", 'wb') as f_out:
+            
             f_out.writelines(f_in)
     
     result_label.config(text=f"File '{input_file}' compressed to '{output_file}.gz'")
+
+    #code for real time analysis
+    output_file=output_file+".gz"
+    a=os.path.abspath(output_file)
+    size=os.path.getsize(a)/1024
+    result_label_size.config(text=f"After compression file size: {size:.4f} KB")
 
 def py7zrfilecompressor(input_file,output_file):
     with py7zr.SevenZipFile(output_file+".rar", mode='w') as archive:
         archive.writeall(input_file, arcname='.')
     result_label.config(text=f"File '{input_file}' compressed to '{output_file}.rar'")
+
+    #code for real time analysis
+    output_file=output_file+".rar"
+    a=os.path.abspath(output_file)
+    size=os.path.getsize(a)/1024
+    result_label_size.config(text=f"After compression file size: {size:.4f} KB")
 
 
 #Decompressor
@@ -57,8 +78,12 @@ def gzipfiledecompressor(input_file,output_file):
 def py7zrfiledecompressor(input_file,output_file):
     with py7zr.SevenZipFile(input_file, 'r') as archive:
         archive.extractall(path=output_file)
-    
+
     result_label.config(text=f"File '{input_file}' decompressed to '{output_file}'")
+
+def printsize(input_file):
+    a=os.path.getsize(input_file)/1024
+    return a
 
 def compress_file():
     input_file=input_file_entry.get()
@@ -72,6 +97,9 @@ def compress_file():
         if not os.path.exists(input_file):
             raise ValueError(f"Input File {input_file} not found")
         
+        result_label_size_before.config(text=f"Before compression file size:{printsize(input_file):.4f} KB")
+        start_time = time.time()
+        
         if format_choice=="GZIP":
             output_file=input_file
             gzipfilecompressor(input_file,output_file)
@@ -81,6 +109,12 @@ def compress_file():
             py7zrfilecompressor(input_file,output_file)
         else:
             result_label.config(text="Invalid format selection.")
+
+
+        elapsed_time = time.time() - start_time
+        result_label_time.config(text=f"The time taken to compressor the  file :{elapsed_time:.4f} sec")
+
+
     except Exception as e:
         result_label.config(text=f"An error occurred: {e}")
 
@@ -174,7 +208,27 @@ format_menu.place(x=380, y=270)
 result_label = tk.Label(app, text="")
 result_label.pack(side="left")
 
-result_label.place(x=250,y=430)
+result_label.place(x=150,y=400)
+
+
+result_label_size_before = tk.Label(app, text="")
+result_label_size_before.pack(side="left")
+
+result_label_size_before.place(x=150,y=420)
+
+
+
+result_label_size = tk.Label(app, text="")
+result_label_size.pack(side="left")
+
+result_label_size.place(x=355,y=420)
+
+
+
+result_label_time = tk.Label(app, text="")
+result_label_time.pack(side="left")
+
+result_label_time.place(x=150,y=440)
 
 # Run the application
 app.mainloop()
